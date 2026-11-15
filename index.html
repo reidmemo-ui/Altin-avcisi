@@ -1,1 +1,116 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Altın Avcısı</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#172c43;color:white;font-family:Arial;text-align:center}
+h1{color:#ffd54a;margin:12px}
+#info{display:flex;justify-content:space-around;font-size:18px;padding:10px}
+canvas{background:#8bd9bd;width:94vw;max-width:430px;border:5px solid #fff;border-radius:18px;touch-action:none}
+button{border:0;border-radius:14px;padding:14px;margin:5px;background:#ffc83d;font-size:18px;font-weight:bold}
+#controls button{width:100px;background:#ffdf78}
+#menu{padding:8px}
+</style>
+</head>
+<body>
+<h1>🐻 ALTIN AVCISI 🪙</h1>
+<div id="info">
+<span>🪙 <b id="score">0</b></span>
+<span>❤️ <b id="lives">3</b></span>
+<span>🏆 <b id="best">0</b></span>
+</div>
+<canvas id="game" width="360" height="500"></canvas>
+<div id="controls">
+<button id="left">⬅️</button>
+<button id="right">➡️</button>
+</div>
+<div id="menu">
+<button onclick="start()">▶️ OYNA</button>
+<button onclick="shop()">🧸 KARAKTERLER</button>
+<button onclick="changeMap()">🗺️ HARİTA</button>
+</div>
+<p id="message">Altınları topla, kayalara çarpma!</p>
+<script>
+const c=document.getElementById("game"),x=c.getContext("2d");
+let player=180,items=[],score=0,lives=3,running=false,frame=0;
+let best=Number(localStorage.best||0),character=0,map=0;
+const bears=["🐻","🐼","🐨","🐸","🐱","🐰"];
+const maps=["#8bd9bd","#8ac8ff","#e8b7ed","#f4d58d"];
+document.getElementById("best").textContent=best;
+function draw(){
+x.fillStyle=maps[map];x.fillRect(0,0,360,500);
+x.fillStyle="#ffffff55";
+for(let i=0;i<360;i+=45){x.beginPath();x.arc(i,frame%500,12,0,7);x.fill()}
+x.font="40px Arial";x.textAlign="center";
+x.fillText(bears[character],player,445);
+items.forEach(a=>{
+x.font="28px Arial";x.fillText(a.type==="coin"?"🪙":"🪨",a.x,a.y);
+});
+}
+function start(){
+if(running)return;
+score=0;lives=3;items=[];player=180;frame=0;running=true;
+document.getElementById("message").textContent="Haydi altınları topla!";
+update();loop();
+}
+function update(){
+document.getElementById("score").textContent=score;
+document.getElementById("lives").textContent=lives;
+}
+function loop(){
+if(!running)return;
+frame++;
+if(frame%38===0)items.push({x:20+Math.random()*320,y:-20,type:Math.random()<.72?"coin":"rock"});
+items.forEach(a=>a.y+=4);
+items=items.filter(a=>{
+if(a.y>410&&a.y<475&&Math.abs(a.x-player)<32){
+if(a.type==="coin"){score+=10;beep(700)}
+else{lives--;beep(150)}
+update();return false;
+}
+return a.y<530;
+});
+draw();
+if(lives<=0){
+running=false;
+if(score>best){best=score;localStorage.best=best}
+document.getElementById("best").textContent=best;
+document.getElementById("message").textContent="Oyun bitti! Puanın: "+score;
+return;
+}
+requestAnimationFrame(loop);
+}
+function move(d){player=Math.max(25,Math.min(335,player+d))}
+document.getElementById("left").ontouchstart=e=>{e.preventDefault();move(-35)};
+document.getElementById("right").ontouchstart=e=>{e.preventDefault();move(35)};
+document.getElementById("left").onclick=()=>move(-35);
+document.getElementById("right").onclick=()=>move(35);
+c.ontouchmove=e=>{
+let r=c.getBoundingClientRect();
+player=Math.max(25,Math.min(335,(e.touches[0].clientX-r.left)*360/r.width));
+};
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowLeft")move(-25);
+if(e.key==="ArrowRight")move(25);
+});
+function beep(f){
+try{let a=new AudioContext(),o=a.createOscillator(),g=a.createGain();
+o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(a.destination);
+o.start();o.stop(a.currentTime+.12)}catch(e){}
+}
+function shop(){
+let n=prompt("Karakter seç: 0 Ayıcık, 1 Panda, 2 Koala, 3 Kurbağa, 4 Kedi, 5 Tavşan");
+if(n!==null&&Number.isInteger(+n)&&+n>=0&&+n<6){
+character=+n;draw();
+}
+}
+function changeMap(){map=(map+1)%maps.length;draw()}
+draw();
+</script>
+</body>
+</html>
+
