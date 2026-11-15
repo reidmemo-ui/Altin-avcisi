@@ -1,0 +1,13 @@
+
+{
+  "id": "./",
+  "name": "Altın Avcısı",
+  "short_name": "Altın Avcısı",
+  "description": "Sevimli ayıcıkla altınları topla, engellerden kaç ve rekorunu kır!",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#172c43",
+  "theme_color": "#172c43"
+}
