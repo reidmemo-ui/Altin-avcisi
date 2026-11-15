@@ -1,9 +1,8 @@
-
 {
   "id": "./",
   "name": "Altın Avcısı",
   "short_name": "Altın Avcısı",
-  "description": "Sevimli ayıcıkla altınları topla, engellerden kaç ve rekorunu kır!",
+  "description": "Sevimli ayıcıkla altınları topla!",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -12,9 +11,15 @@
   "theme_color": "#172c43",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "altin-avcisi-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "altin-avcisi-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
